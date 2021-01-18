@@ -4,20 +4,51 @@ Following repository suppose to store the second of two mandatory semestral proj
 
 ## Siamese networkds + One-shot classification - Assignment description
 
-Purpose of this assignment is to design, train, implement and test siamese network for needs of one-shot classification (A classification based on only one known example for certain classes). One-shot classification is necessary especially in situation when number of classes can change dynamicaly and therefore is not possible to re-train the model for each of the particular classes (for instance a visual identification of all employees of some large company). For those situation is possible to use an alternative of Siamese networks (i.e, [Siamese Networks - WIKI](https://en.wikipedia.org/wiki/Siamese_neural_network)), which specialize on binary clasification of pairs of objects.
+Purpose of this assignment is to design, train, implement, and test the siamese network for one-shot classification (A classification based on only one known example for individual classes). One-shot classification is necessary, significantly when several classes can change dynamically and therefore is impossible to re-train the model for each of the particular classes (for instance, visual identification of all large company employees). For those situations, it is possible to use an alternative of Siamese networks (i.e., [Siamese Networks - WIKI](https://en.wikipedia.org/wiki/Siamese_neural_network)), which specialize in the binary classification of pairs of objects.
 
-<br/>
 
-Your solution will be built on top of Fashion-MNIST dataset ([fashion-mnist dataset](https://github.com/zalandoresearch/fashion-mnist)) or the MNIST dataset.
+The solution will be built on top of Fashion-MNIST dataset ([fashion-mnist dataset](https://github.com/zalandoresearch/fashion-mnist)) or the MNIST dataset.
 
 ### Assignment requirements
-- Create model of Siamese network (expectation on use ***tf.keras***)
+- Create a model of Siamese network (expectation on use ***Keras***)
 - Train the model on Fashion-MNIST dataset (train set needs to be adjusted for the needs of **binary classification**)
-- Extend the Fashion-MNIST dataset by a new classes (more details below)
+- Extend the Fashion-MNIST dataset by new classes (more details below)
 - Test the model on the both, the original dataset and the representatives of the new categories
-- Report an achieved results and explore the influence of hyper-parameters of the model on the results
+- Report achieved results and explore the influence of hyper-parameters of the model on the results
 
-### Further details
-Minimal precision of the model on the validation dataset is expected to be *approximatelly 90%*. Scale of extensions of **Fashion-MNIST** dataset is let upon your decission and design, however it is required to introduce at least 10 new classes, which will be disjoint with the original dataset. Those classes suppose to extend the domain of the mode (watches, hats, etc.), or are related to another domain (for instance furniture). 
+#### Further details
+Minimal precision of the model on the validation dataset is expected to be *approximately 90%*. The scale of extensions of **Fashion-MNIST** dataset is let upon your decision and design; however, it is required to introduce at least 10 new classes, which will be disjoint with the original dataset. Those classes suppose to extend the domain of the mode (watches, hats, etc.), or are related to another domain (for instance, furniture). 
 
-From each class choose at least 10 representative and convert them **Fashion-MNIST** format ***(greyscale, 28x28)***. For this you may want to use a subset of **ImageNet** dataset. From each class then chose one representative (***known class member***) which will be used for testing against the rest of the data (it means that you do not re-train the network for new classes, but you investigate distances between *known representatives* and new data). 
+Each class chooses at least 10 representatives and converts them **Fashion-MNIST** format ***(greyscale, 28x28)***. For this, you may want to use a subset of **ImageNet** dataset. Each class then chose one representative (***known class member***) which will be used for testing against the rest of the data (it means that you do not re-train the network for new classes, but you investigate distances between *known representatives* and new data). 
+
+During the testing phase compare the precision and correctness on both, the test dataset and the new classes (however each test object will be compared with representants of all classes; thus you will examine classification at least on 20 classes). Show also an example of ***Confusion Matrix*** for instance in the format of *Heat Map*. Generally, a good performance is expected on the original and the extended data (lecturer by him-implemented baseline defines reasonability).
+
+Preferable format of assignment submission is in Jupyter notebook with an archive consisting of the extended dataset.
+
+### Optional requirements
+- What influence does the selection of the representing class members during the testing phase have (random selection, centroids, etc.)?
+- Are there any significant similarity between the classes (for instance based on class probability)?
+- Does the similarity metrics implemented by the ***Siamese Network*** influence the results? Or the choice of the dataset?
+
+## Task 1 - Construct the Siamese network
+
+- Extend the previous model (you will probably need to remove some parts of it) to form a siamese network
+- Use either MNIST or Fashion-MNIST dataset (the second one is prefered because the content is a bit more generic)
+- Siamese network: two networks that share the same parameters with distance estimator in the end
+- Assumption: if two examples are rendered close enough in the latent space, they should belong to the same class [Siamese Network - WIKI](https://en.wikipedia.org/wiki/Siamese_neural_network)
+
+## Task 2 - K-shot classification on existing labels
+
+- Predict the class based on similar items - if only a small number of items per class is available
+- Get K samples of each class from the train data
+- For each test set member, check the distances to samples and predict the class of the closest neighbour
+- Check accuracy, report results, write conclusions
+
+## Task 3 - One-shot (k-shot) classification for newly introduced classes
+
+- Now we try whether the embeddings generated by a Siamese network (i.e., the last layer before similarity calculation) can generalize for unseen classes
+- First: find some data - perhaps images from Ikea? Maybe different types of electronics? Whatever strikes your fancy
+- Transform the data to comply with the original dataset (dimensions, grayscale, maybe some other transformations)
+- Select train example for each class, run siamese network prediction & evaluate results (try both evaluating only w.r.t. new classes and w.r.t. both new and original classes)
+- Report results
+
